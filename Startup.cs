@@ -1,19 +1,17 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using TodoMysqlApi.Models;
 
 namespace TodoMysqlApi
 {
-    public class Startup
+  public class Startup
     {
         public Startup(IConfiguration configuration)
         {
@@ -25,6 +23,24 @@ namespace TodoMysqlApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            const string connStr = "server=localhost;user=dotnet-todo-user;password=dotnet-todo;database=dotnet_todo";
+            services.AddDbContextPool<TodoContext>(
+                dbContextOptions => dbContextOptions
+                    .UseMySql(
+                        connStr,
+                        // Replace with your server version and type.
+                        mySqlOptions => mySqlOptions
+                            .ServerVersion(new Version(5, 7, 31), ServerType.MySql)
+                            .CharSetBehavior(CharSetBehavior.NeverAppend))
+                    // Everything from this point on is optional but helps with debugging.
+                    .UseLoggerFactory(
+                        LoggerFactory.Create(
+                            logging => logging
+                                .AddConsole()
+                                .AddFilter(level => level >= LogLevel.Information)))
+                    .EnableSensitiveDataLogging()
+                    .EnableDetailedErrors()
+            );
             services.AddControllers();
         }
 
