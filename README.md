@@ -33,3 +33,5 @@ $ curl --insecure -X POST https://localhost:5001/api/TodoItems -H "Content-Type:
 $ curl --insecure -X GET https://localhost:5001/api/TodoItems
 [{"id":1,"name":"mow the lawn","isComplete":true}]
 ```
+
+If you uncomment the `[Authorize]` attribute in TodoItemsController.cs, you will need to pass in valid user credentials. You can add `-u test:test` to do this (credentials are hardcoded into UserService.cs).
