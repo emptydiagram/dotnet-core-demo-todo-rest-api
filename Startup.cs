@@ -23,11 +23,10 @@ namespace TodoMysqlApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            const string connStr = "server=localhost;user=dotnet-todo-user;password=dotnet-todo;database=dotnet_todo";
             services.AddDbContextPool<TodoContext>(
                 dbContextOptions => dbContextOptions
                     .UseMySql(
-                        connStr,
+                        Configuration.GetConnectionString("TodoDatabase"),
                         // Replace with your server version and type.
                         mySqlOptions => mySqlOptions
                             .ServerVersion(new Version(5, 7, 31), ServerType.MySql)

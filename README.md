@@ -19,7 +19,7 @@ Then add:
 
 These come from the ["Create a web API" tutorial](https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api) on Microsoft's website.
 
-Add `Pomelo.EntityFrameworkCore.MySql` as a dependency and add call to `services.AddDbContextPool` in Startup.cs (per the [Pomelo docs](https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql#3-services-configuration)).
+Add `Pomelo.EntityFrameworkCore.MySql` as a dependency and add call to `services.AddDbContextPool` in Startup.cs (per the [Pomelo docs](https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql#3-services-configuration)). Also add a connection string in appsettings.json.
 
 Now build and run the app (`dotnet run`). We can subsequently access API endpoints:
 
