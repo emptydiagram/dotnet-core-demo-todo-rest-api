@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using TodoMysqlApi.Entities;
+using TodoMysqlApi.Models;
 using TodoMysqlApi.Services;
 
 namespace TodoMysqlApi.Helpers
@@ -59,7 +59,7 @@ namespace TodoMysqlApi.Helpers
 
             var claims = new[] {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Name, user.UserName),
             };
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var principal = new ClaimsPrincipal(identity);

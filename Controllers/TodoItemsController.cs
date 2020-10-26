@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace TodoMysqlApi.Controllers
 {
-  //[Authorize]
+  [Authorize]
   [Route("api/[controller]")]
   [ApiController]
   public class TodoItemsController : ControllerBase

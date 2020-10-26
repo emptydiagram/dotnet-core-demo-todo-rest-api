@@ -1,40 +1,50 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TodoMysqlApi.Entities;
+using TodoMysqlApi.Models;
 using TodoMysqlApi.Helpers;
+using System;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Identity;
 
 namespace TodoMysqlApi.Services
 {
-    public interface IUserService
+  public interface IUserService
+  {
+    Task<User> Authenticate(string username, string password);
+  }
+
+  public class UserService : IUserService
+  {
+
+    private readonly TodoContext _context;
+
+    public UserService(TodoContext context)
     {
-        Task<User> Authenticate(string username, string password);
-        Task<IEnumerable<User>> GetAll();
+      _context = context;
     }
 
-    public class UserService : IUserService
+    public async Task<User> Authenticate(string username, string password)
     {
-        // users hardcoded for simplicity, store in a db with hashed passwords in production applications
-        private List<User> _users = new List<User>
-        {
-            new User { Id = 1, Username = "test", Password = "test" }
-        };
+      var user = await Task.Run(() =>
+        _context.Users.SingleOrDefault(u => u.UserName == username));
+      user = verifyUserPassword(user, password) ? user : null;
 
-        public async Task<User> Authenticate(string username, string password)
-        {
-            var user = await Task.Run(() => _users.SingleOrDefault(x => x.Username == username && x.Password == password));
-
-            // return null if user not found
-            if (user == null)
-                return null;
-
-            // authentication successful so return user details without password
-            return user.WithoutPassword();
-        }
-
-        public async Task<IEnumerable<User>> GetAll()
-        {
-            return await Task.Run(() => _users.WithoutPasswords());
-        }
+      // return null if user not found
+      if (user == null) {
+        return null;
+      }
+      return user;
     }
+
+    private static bool verifyUserPassword(User user, string password)
+    {
+      var pwHasher = new PasswordHasher<User>(null);
+      var result = pwHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+      Console.WriteLine($"verify result = {result}");
+      return result == PasswordVerificationResult.Success;
+    }
+  }
+
 }
