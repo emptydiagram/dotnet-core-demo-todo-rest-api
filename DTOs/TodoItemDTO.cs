@@ -1,5 +1,7 @@
 
-namespace TodoMysqlApi.DTOs {
+namespace TodoMysqlApi.DTOs
+{
+
   public class TodoItemDTO
   {
     public long Id { get; set; }

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TodoMysqlApi.Models;
-using TodoMysqlApi.Helpers;
 using System;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
@@ -29,6 +28,7 @@ namespace TodoMysqlApi.Services
     {
       var user = await Task.Run(() =>
         _context.Users.SingleOrDefault(u => u.UserName == username));
+
       user = verifyUserPassword(user, password) ? user : null;
 
       // return null if user not found
@@ -40,7 +40,8 @@ namespace TodoMysqlApi.Services
 
     private static bool verifyUserPassword(User user, string password)
     {
-      var pwHasher = new PasswordHasher<User>(null);
+      if (user == null) return false;
+      var pwHasher = new PasswordHasher<User>();
       var result = pwHasher.VerifyHashedPassword(user, user.PasswordHash, password);
       Console.WriteLine($"verify result = {result}");
       return result == PasswordVerificationResult.Success;
