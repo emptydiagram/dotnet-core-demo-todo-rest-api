@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +12,7 @@ using TodoMysqlApi.Services;
 
 namespace TodoMysqlApi.Controllers
 {
-  [Route("api/v1/login")]
+  [Route("api/v1/Account/[controller]")]
   [ApiController]
   public class LoginController : ControllerBase {
     private readonly TodoContext _context;
@@ -21,6 +22,12 @@ namespace TodoMysqlApi.Controllers
     {
       _context = context;
       _userService = userService;
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<ActionResult> getLogin() {
+      return await Task.Run(() => NoContent());
     }
 
     [HttpPost]
