@@ -3,6 +3,7 @@ import { Link, Route, Switch, useLocation } from 'wouter';
 import ky from 'ky';
 
 import TodoListApp from './TodoListApp';
+import LoginPage from './LoginPage';
 
 function App() {
   let [location, setLocation] = useLocation();
@@ -21,7 +22,7 @@ function App() {
             // not logged in, redirect to login
             setLocation('/login');
           } else {
-            // uhhh?
+            console.log("Unanticipated HTTP error response: ", error.response);
           }
         } else {
           console.log("Unknown error occurred: ", error);
@@ -39,6 +40,24 @@ function App() {
     })();
   }, []);
 
+  const doLogin = async (username: string, password: string) => {
+    let resp;
+    try {
+      resp = await ky.post('https://localhost:5001/api/v1/Account/Login', {
+        json: { UserName: username, Password: password }
+      });
+    } catch (error) {
+      if (error instanceof ky.HTTPError) {
+        return false;
+      } else {
+        console.log("Unknown error occurred: ", error);
+      }
+
+    }
+
+    return resp != null && resp.status >= 200 && resp.status <= 299;
+  };
+
   return (
     <div>
       <Link href="/login">login</Link>
@@ -46,7 +65,9 @@ function App() {
 
       <Switch>
         <Route path="/login">
-          <p>TODO: login stuff</p>
+          <LoginPage
+            handleLogin={doLogin}
+          />
         </Route>
         <Route path="/todo">
           <TodoListApp />
